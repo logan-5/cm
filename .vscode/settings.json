@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.lex": "lex",
+        "type_traits": "cpp",
+        "array": "cpp"
+    }
+}
