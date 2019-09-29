@@ -2,6 +2,7 @@
 #define CM_VEC_HPP
 
 #include <cm/vec_base.hpp>
+#include <cm/vec_ops.hpp>
 
 namespace cm {
 

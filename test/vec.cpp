@@ -144,3 +144,31 @@ TEST_CASE("scalar operations") {
         REQUIRE(cCopy == ivec4{0});
     }
 }
+
+static_assert(dot(ivec2{-6, 8}, ivec2{5, 12}) == 66);
+static_assert(dot(ivec3{1, 3, -5}, ivec3{4, -2, -1}) == 3);
+static_assert(dot(vec3{9.f, 2.f, 7.f}, vec3{4.f, 8.f, 10.f}) == 122.f);
+
+static_assert(magnitude_squared(ivec2{1, 0}) == 1);
+static_assert(magnitude_squared(ivec2{0, 1}) == 1);
+static_assert(magnitude_squared(ivec2{1, 1}) == 2);
+static_assert(magnitude_squared(vec3{5.f, 5.f, 5.f}) == 75.f);
+
+bool fuzzy_equals(float a, float b, float err) {
+    return std::abs(a - b) < err;
+}
+
+TEST_CASE("magnitude") {
+    REQUIRE(magnitude(ivec2{1, 0}) == 1);
+    REQUIRE(magnitude(ivec2{0, 1}) == 1);
+    REQUIRE(magnitude(ivec2{1, 1}) == 1);
+    REQUIRE(fuzzy_equals(magnitude(vec2{1, 1}), M_SQRT2, 0.005));
+    REQUIRE(fuzzy_equals(magnitude(vec3{2.f, 3.f, 5.f}), 6.16f, 0.005f));
+}
+
+TEST_CASE("normalized") {
+    REQUIRE(normalized(ivec2{1, 0}) == ivec2{1, 0});
+    REQUIRE(normalized(ivec2{0, 1}) == ivec2{0, 1});
+    REQUIRE(normalized(ivec2{1, 1}) == ivec2{1, 1});
+    REQUIRE(magnitude(normalized(vec4{5.f, 50.f, 85.f, 9.f})) == 1.f);
+}
