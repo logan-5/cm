@@ -95,6 +95,7 @@ struct vec_base {
     constexpr vec_base(const vec_base<OtherRep, Dim>& other)
         : storage{detail::converted<Rep>(other.storage)} {}
 
+    using rep = Rep;
     static constexpr auto dimension() noexcept { return Dim; }
 
     Rep& operator[](usize idx) noexcept { return storage[idx]; }
@@ -105,6 +106,7 @@ struct vec_base {
 
 template <typename Rep>
 struct vec_base<Rep, 0> {
+    using rep = Rep;
     static constexpr auto dimension() noexcept { return 0; }
 };
 
