@@ -95,16 +95,17 @@ struct vec_base {
     constexpr vec_base(const vec_base<OtherRep, Dim>& other)
         : storage{detail::converted<Rep>(other.storage)} {}
 
-    static constexpr auto length() noexcept { return Dim; }
-    static constexpr auto size() noexcept { return Dim; }
+    static constexpr auto dimension() noexcept { return Dim; }
+
+    Rep& operator[](usize idx) noexcept { return storage[idx]; }
+    const Rep& operator[](usize idx) const noexcept { return storage[idx]; }
 
     std::array<Rep, Dim> storage;
 };
 
 template <typename Rep>
 struct vec_base<Rep, 0> {
-    static constexpr auto length() noexcept { return 0; }
-    static constexpr auto size() noexcept { return 0; }
+    static constexpr auto dimension() noexcept { return 0; }
 };
 
 }  // namespace cm
