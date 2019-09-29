@@ -112,6 +112,106 @@ operator==(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
     return cm::equal<Size>(a.storage.data(), b.storage.data());
 }
 
+namespace detail {
+template <typename Op, typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& componentwise_op(
+      Op op,
+      vec_base<Rep, Size>& lhs,
+      const vec_base<Rep, Size>& rhs) {
+    for (usize i = 0; i < Size; ++i) {
+        op(lhs.storage[i], rhs.storage[i]);
+    }
+    return lhs;
+}
+}  // namespace detail
+
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& operator+=(vec_base<Rep, Size>& lhs,
+                                          const vec_base<Rep, Size>& rhs) {
+    return detail::componentwise_op(
+          [](auto& l, const auto& r) { return l += r; }, lhs, rhs);
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator+(vec_base<Rep, Size> lhs,
+                                        const vec_base<Rep, Size>& rhs) {
+    lhs += rhs;
+    return lhs;
+}
+
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& operator-=(vec_base<Rep, Size>& lhs,
+                                          const vec_base<Rep, Size>& rhs) {
+    return detail::componentwise_op(
+          [](auto& l, const auto& r) { return l -= r; }, lhs, rhs);
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator-(vec_base<Rep, Size> lhs,
+                                        const vec_base<Rep, Size>& rhs) {
+    lhs -= rhs;
+    return lhs;
+}
+
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& operator*=(vec_base<Rep, Size>& lhs,
+                                          const vec_base<Rep, Size>& rhs) {
+    return detail::componentwise_op(
+          [](auto& l, const auto& r) { return l *= r; }, lhs, rhs);
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator*(vec_base<Rep, Size> lhs,
+                                        const vec_base<Rep, Size>& rhs) {
+    lhs *= rhs;
+    return lhs;
+}
+
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& operator/=(vec_base<Rep, Size>& lhs,
+                                          const vec_base<Rep, Size>& rhs) {
+    return detail::componentwise_op(
+          [](auto& l, const auto& r) { return l /= r; }, lhs, rhs);
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator/(vec_base<Rep, Size> lhs,
+                                        const vec_base<Rep, Size>& rhs) {
+    lhs /= rhs;
+    return lhs;
+}
+
+namespace detail {
+template <typename Op, typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& scalar_op(vec_base<Rep, Size>& lhs, Op op) {
+    for (usize i = 0; i < Size; ++i) {
+        op(lhs.storage[i]);
+    }
+    return lhs;
+}
+}  // namespace detail
+
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& operator*=(vec_base<Rep, Size>& lhs, Rep rhs) {
+    return detail::scalar_op(lhs, [&](Rep& l) { l *= rhs; });
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator*(vec_base<Rep, Size> lhs, Rep rhs) {
+    lhs *= rhs;
+    return lhs;
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator-(vec_base<Rep, Size> lhs) {
+    lhs *= Rep(-1);
+    return lhs;
+}
+
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size>& operator/=(vec_base<Rep, Size>& lhs, Rep rhs) {
+    return detail::scalar_op(lhs, [&](Rep& l) { l /= rhs; });
+}
+template <typename Rep, usize Size>
+constexpr vec_base<Rep, Size> operator/(vec_base<Rep, Size> lhs, Rep rhs) {
+    lhs /= rhs;
+    return lhs;
+}
+
 }  // namespace cm
 
 #endif

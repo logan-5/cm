@@ -51,3 +51,96 @@ TEST_CASE("accessors", "[accessors]") {
         REQUIRE(vCopy.a() == 40.f);
     }
 }
+
+TEST_CASE("component-wise operations") {
+    constexpr vec4 a{0.f, 0.f, 0.f, 0.f};
+    constexpr vec4 b{1.f, 1.f, 1.f, 1.f};
+    static_assert(a + b == b);
+    static_assert(b + a == b);
+    static_assert(b + b == vec4{2.f, 2.f, 2.f, 2.f});
+    SECTION("add assignment") {
+        vec4 aCopy = a;
+        aCopy += a;
+        REQUIRE(aCopy == vec4{0.f, 0.f, 0.f, 0.f});
+        aCopy += b;
+        REQUIRE(aCopy == b);
+        aCopy += b;
+        REQUIRE(aCopy == (b + b));
+    }
+
+    static_assert(a - b == vec4{-1.f, -1.f, -1.f, -1.f});
+    static_assert(b - a == b);
+    static_assert(b - b == a);
+    SECTION("sub assignment") {
+        vec4 aCopy = a;
+        aCopy -= a;
+        REQUIRE(aCopy == vec4{0.f, 0.f, 0.f, 0.f});
+        aCopy -= b;
+        REQUIRE(aCopy == vec4{-1.f, -1.f, -1.f, -1.f});
+        aCopy -= b;
+        REQUIRE(aCopy == vec4{-2.f, -2.f, -2.f, -2.f});
+    }
+
+    constexpr ivec4 c{5, 5, 5, 5};
+    constexpr ivec4 d{2, 2, 3, 6};
+    static_assert(a * b == a);
+    static_assert(b * a == a);
+    static_assert(b * b == b);
+    static_assert(b * vec4{2.f, 2.f, 2.f, 2.f} == vec4{2.f, 2.f, 2.f, 2.f});
+    static_assert(c * d == ivec4{10, 10, 15, 30});
+    SECTION("mul assignment") {
+        vec4 aCopy = a;
+        aCopy *= a;
+        REQUIRE(aCopy == vec4{0.f, 0.f, 0.f, 0.f});
+        aCopy *= b;
+        REQUIRE(aCopy == vec4{0.f, 0.f, 0.f, 0.f});
+        vec4 bCopy = b;
+        bCopy *= vec4{2.f, 2.f, 2.f, 2.f};
+        REQUIRE(bCopy == vec4{2.f, 2.f, 2.f, 2.f});
+    }
+
+    static_assert(a / b == a);
+    static_assert(c / d == ivec4{2, 2, 1, 0});
+    static_assert(d / d == ivec4{1, 1, 1, 1});
+    SECTION("div assignment") {
+        ivec4 cCopy = c;
+        cCopy /= c;
+        REQUIRE(cCopy == ivec4{1, 1, 1, 1});
+        cCopy /= d;
+        REQUIRE(cCopy == ivec4{0, 0, 0, 0});
+    }
+}
+
+TEST_CASE("scalar operations") {
+    constexpr vec4 a{0.f, 0.f, 0.f, 0.f};
+    constexpr vec4 b{1.f, 1.f, 1.f, 1.f};
+    constexpr ivec4 c{5, 5, 5, 5};
+    constexpr ivec4 d{2, 2, 3, 6};
+    static_assert(a * 1.f == a);
+    static_assert(b * 1.f == b);
+    static_assert(b * 2.f == vec4{2.f, 2.f, 2.f, 2.f});
+    static_assert(c * 3 == ivec4{15, 15, 15, 15});
+    static_assert(d * 5 == ivec4{10, 10, 15, 30});
+    SECTION("mul assignment") {
+        vec4 aCopy = a;
+        aCopy *= 10.f;
+        REQUIRE(aCopy == vec4{0.f, 0.f, 0.f, 0.f});
+        vec4 bCopy = b;
+        bCopy *= 10.f;
+        REQUIRE(bCopy == vec4{10.f, 10.f, 10.f, 10.f});
+    }
+
+    static_assert(-b == vec4{-1.f, -1.f, -1.f, -1.f});
+    static_assert(-c == ivec4{-5, -5, -5, -5});
+
+    static_assert(a / 5.f == a);
+    static_assert(c / 5 == ivec4{1, 1, 1, 1});
+    static_assert(d / 5 == ivec4{0, 0, 0, 1});
+    SECTION("div assignment") {
+        ivec4 cCopy = c;
+        cCopy /= 2;
+        REQUIRE(cCopy == ivec4{2});
+        cCopy /= 10;
+        REQUIRE(cCopy == ivec4{0});
+    }
+}
