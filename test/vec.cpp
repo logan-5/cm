@@ -28,7 +28,7 @@ static_assert(vec2{1.f, 2.f}.x() == 1.f);
 static_assert(vec2{1.f, 2.f}.y() == 2.f);
 static_assert(vec3{1.f, 2.f, 3.f}.z() == vec3{1.f, 2.f, 3.f}.b());
 
-TEST_CASE("accessors", "[accessors]") {
+TEST_CASE("accessors", "[vec]") {
     constexpr vec4 v{1.f, 2.f, 3.f, 4.f};
     static_assert(v.x() == 1.f);
     static_assert(v.x() == v.r());
@@ -52,7 +52,7 @@ TEST_CASE("accessors", "[accessors]") {
     }
 }
 
-TEST_CASE("component-wise operations") {
+TEST_CASE("component-wise operations", "[vec]") {
     constexpr vec4 a{0.f, 0.f, 0.f, 0.f};
     constexpr vec4 b{1.f, 1.f, 1.f, 1.f};
     static_assert(a + b == b);
@@ -111,7 +111,7 @@ TEST_CASE("component-wise operations") {
     }
 }
 
-TEST_CASE("scalar operations") {
+TEST_CASE("scalar operations", "[vec]") {
     constexpr vec4 a{0.f, 0.f, 0.f, 0.f};
     constexpr vec4 b{1.f, 1.f, 1.f, 1.f};
     constexpr ivec4 c{5, 5, 5, 5};
@@ -158,7 +158,7 @@ bool fuzzy_equals(float a, float b, float err) {
     return std::abs(a - b) < err;
 }
 
-TEST_CASE("magnitude") {
+TEST_CASE("magnitude", "[vec]") {
     REQUIRE(magnitude(ivec2{1, 0}) == 1);
     REQUIRE(magnitude(ivec2{0, 1}) == 1);
     REQUIRE(magnitude(ivec2{1, 1}) == 1);
@@ -166,7 +166,7 @@ TEST_CASE("magnitude") {
     REQUIRE(fuzzy_equals(magnitude(vec3{2.f, 3.f, 5.f}), 6.16f, 0.005f));
 }
 
-TEST_CASE("normalized") {
+TEST_CASE("normalized", "[vec]") {
     REQUIRE(normalized(ivec2{1, 0}) == ivec2{1, 0});
     REQUIRE(normalized(ivec2{0, 1}) == ivec2{0, 1});
     REQUIRE(normalized(ivec2{1, 1}) == ivec2{1, 1});

@@ -4,6 +4,7 @@
 #include <array>
 #include <type_traits>
 
+#include <cm/algorithm.hpp>
 #include <cm/fwd.hpp>
 
 namespace cm {
