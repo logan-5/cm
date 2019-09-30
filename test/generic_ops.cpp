@@ -25,3 +25,15 @@ TEST_CASE("lerp", "[generic ops]") {
     REQUIRE(lerp(vec3{0.f, 1.f, 0.f}, vec3{1.f, 0.f, 0.f}, 0.5f) ==
             vec3{vec2{0.5f}, scalar{0.f}});
 }
+
+TEST_CASE("linearstep", "[generic ops]") {
+    static_assert(cm::linearstep(0.5f, 0.f, 0.5f) == 0.f);
+    static_assert(cm::linearstep(0.5f, 0.f, 0.f) == 1.f);
+    static_assert(cm::linearstep(0, 15, 7) == 0);
+    static_assert(cm::linearstep(0.f, 20.f, 10) == 0.5f);
+
+    REQUIRE(cm::linearstep(0.5f, 0.f, 0.5f) == 0.f);
+    REQUIRE(cm::linearstep(0.5f, 0.f, 0.f) == 1.f);
+    REQUIRE(cm::linearstep(0, 15, 7) == 0);
+    REQUIRE(cm::linearstep(0.f, 20.f, 10) == 0.5f);
+}

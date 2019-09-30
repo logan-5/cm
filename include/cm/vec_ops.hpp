@@ -25,14 +25,14 @@ inline constexpr bool is_vec_v =
       !std::is_same_v<decltype(vec_base_type_helper::foo(std::declval<T>())),
                       void>;
 
-template <typename Op, typename V>
+template <typename Op, typename V, typename... Vs>
 constexpr std::enable_if_t<is_vec_v<V>, V&> componentwise_op(Op op,
                                                              V& lhs,
-                                                             const V& rhs) {
+                                                             const Vs&... rhs) {
     using base = decltype(vec_base_type_helper::foo(lhs));
     for (usize i = 0; i < V::dimension(); ++i) {
         op(static_cast<base&>(lhs).storage[i],
-           static_cast<const base&>(rhs).storage[i]);
+           static_cast<const base&>(rhs).storage[i]...);
     }
     return lhs;
 }
@@ -166,6 +166,24 @@ constexpr std::enable_if_t<detail::is_vec_v<V>, V> normalized(const V& v) {
     using Rep = typename V::rep;
     const Rep scale = Rep(1) / magnitude(v);
     return v * scale;
+}
+
+template <typename V>
+constexpr std::enable_if_t<detail::is_vec_v<V>, V> clamp(V v,
+                                                         typename V::rep lo,
+                                                         typename V::rep hi) {
+    return detail::scalar_op(
+          v, [&](typename V::rep& v) { v = std::clamp(v, lo, hi); });
+}
+
+template <typename V>
+constexpr std::enable_if_t<detail::is_vec_v<V>, V> clamp(V v,
+                                                         const V& lo,
+                                                         const V& hi) {
+    return detail::componentwise_op(
+          [](typename V::rep& v, const typename V::rep& lo,
+             const typename V::rep& hi) { v = std::clamp(v, lo, hi); },
+          v, lo, hi);
 }
 
 }  // namespace cm

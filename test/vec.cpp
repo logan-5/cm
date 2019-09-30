@@ -192,3 +192,43 @@ TEST_CASE("copying", "[vec]") {
 
     REQUIRE("if this all compiled, then we're good");
 }
+
+TEST_CASE("clamp_componentwise", "[vec]") {
+    static_assert(cm::clamp(vec2{0.5f}, 0.f, 1.f) == vec2{0.5f});
+    static_assert(cm::clamp(vec2{10.5f, 2.5f}, 2.f, 3.f) == vec2{3.f, 2.5f});
+    static_assert(cm::clamp(vec4{-100.5f, 0.f, -2.f, 3.f}, -9.f, 1.f) ==
+                  vec4{-9.f, 0.f, -2.f, 1.f});
+
+    REQUIRE(cm::clamp(vec2{0.5f}, 0.f, 1.f) == vec2{0.5f});
+    REQUIRE(cm::clamp(vec2{10.5f, 2.5f}, 2.f, 3.f) == vec2{3.f, 2.5f});
+    REQUIRE(cm::clamp(vec4{-100.5f, 0.f, -2.f, 3.f}, -9.f, 1.f) ==
+            vec4{-9.f, 0.f, -2.f, 1.f});
+
+    static_assert(cm::clamp(vec2{10.f}, vec2{0.f}, vec2{20.f}) == vec2{10.f});
+    static_assert(cm::clamp(vec2{10.f}, vec2{0.f}, vec2{20.f, 5.f}) ==
+                  vec2{10.f, 5.f});
+    static_assert(cm::clamp(vec4{-100.5f, 0.f, -2.f, 3.f}, vec4{-9.f},
+                            vec4{1.f}) == vec4{-9.f, 0.f, -2.f, 1.f});
+
+    REQUIRE(cm::clamp(vec2{10.f}, vec2{0.f}, vec2{20.f}) == vec2{10.f});
+    REQUIRE(cm::clamp(vec2{10.f}, vec2{0.f}, vec2{20.f, 5.f}) ==
+            vec2{10.f, 5.f});
+    REQUIRE(cm::clamp(vec4{-100.5f, 0.f, -2.f, 3.f}, vec4{-9.f}, vec4{1.f}) ==
+            vec4{-9.f, 0.f, -2.f, 1.f});
+}
+
+#include <cm/generic_ops.hpp>
+
+TEST_CASE("linearstep_componentwise", "[vec]") {
+    static_assert(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.5f}) ==
+                  vec2{0.f});
+    static_assert(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.f}) ==
+                  vec2{1.f});
+    static_assert(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.f, 1.f}) ==
+                  vec2{1.f, 0.f});
+
+    REQUIRE(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.5f}) == vec2{0.f});
+    REQUIRE(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.f}) == vec2{1.f});
+    REQUIRE(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.f, 1.f}) ==
+            vec2{1.f, 0.f});
+}
