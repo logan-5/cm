@@ -14,7 +14,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/catch.hpp)
     endif()
 endif()
 
-set(source_files algorithm.cpp generic_ops.cpp test.cpp vec.cpp)
+set(source_files algorithm.cpp generic_ops.cpp test.cpp random.cpp vec.cpp)
 add_executable(cm_test ${source_files})
 target_link_libraries(cm_test PUBLIC cm)
 target_include_directories(cm_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})

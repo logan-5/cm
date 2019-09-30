@@ -156,7 +156,7 @@ static_assert(magnitude_squared(ivec2{0, 1}) == 1);
 static_assert(magnitude_squared(ivec2{1, 1}) == 2);
 static_assert(magnitude_squared(vec3{5.f, 5.f, 5.f}) == 75.f);
 
-bool fuzzy_equals(float a, float b, float err) {
+static bool fuzzy_equals(float a, float b, float err) {
     return std::abs(a - b) < err;
 }
 
