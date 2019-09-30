@@ -69,9 +69,52 @@ constexpr std::array<T, Size> filled(const T& val) {
 
 template <typename Rep, usize Dim>
 struct vec_base {
+   private:
+    struct magic_base {
+        struct nope {};
+        template <usize D>
+        static vec_base<Rep, D> foo(const vec_base<Rep, D>&);
+        template <typename R, usize D>
+        static nope foo(const vec_base<R, D>&);
+        static void foo(...);
+    };
+    template <typename T>
+    struct magic_helper_ {
+        static constexpr usize dim = 1;
+        static constexpr bool is_vec = false;
+        static constexpr vec_base<T, 1> wrap(const T& t) { return {t}; }
+    };
+    template <usize D>
+    struct magic_helper_<vec_base<Rep, D>> {
+        static constexpr usize dim = D;
+        static constexpr bool is_vec = true;
+        static constexpr const vec_base<Rep, D>& wrap(
+              const vec_base<Rep, D>& v) {
+            return v;
+        }
+    };
+    template <>
+    struct magic_helper_<typename magic_base::nope> {};
+    template <typename T,
+              typename MB = decltype(magic_base::foo(std::declval<T>()))>
+    using magic_helper =
+          magic_helper_<std::conditional_t<std::is_void_v<MB>, T, MB>>;
+
+   public:
     constexpr vec_base() = default;
     constexpr vec_base(const vec_base&) = default;
     vec_base& operator=(const vec_base&) = default;
+
+    // 'magic constructor'
+    // can take any combination of Rep's and vecs of smaller Dim
+    template <typename... Args,
+              typename = std::enable_if_t<
+                    (sizeof...(Args) > 1) &&
+                    (detail::sum_v<magic_helper<Args>::dim...> == Dim) &&
+                    (... || magic_helper<Args>::is_vec)>>
+    constexpr vec_base(const Args&... args)
+        : storage{
+                detail::array_cat(magic_helper<Args>::wrap(args).storage...)} {}
 
     template <typename... Args,
               typename = std::enable_if_t<
@@ -83,12 +126,6 @@ struct vec_base {
 
     template <usize D = Dim, typename = std::enable_if_t<(D > 1)>>
     constexpr vec_base(Rep arg) : storage{detail::filled<Dim>(arg)} {}
-
-    template <usize... Dims,
-              typename = std::enable_if_t<(sizeof...(Dims) > 1) &&
-                                          detail::sum_v<Dims...> == Dim>>
-    constexpr vec_base(const vec_base<Rep, Dims>&... args)
-        : storage{detail::array_cat(args.storage...)} {}
 
     template <typename OtherRep,
               typename = std::enable_if_t<std::is_convertible_v<OtherRep, Rep>>>

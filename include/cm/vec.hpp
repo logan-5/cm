@@ -49,8 +49,10 @@ struct scalar_ : vec_base<Rep, 1> {
    public:
     using base::base;
 
-    constexpr operator Rep&() noexcept { return storage[0]; }
-    constexpr operator const Rep&() const noexcept { return storage[0]; }
+    constexpr explicit operator Rep&() noexcept { return get(); }
+    constexpr explicit operator const Rep&() const noexcept { return get(); }
+    constexpr Rep& get() noexcept { return storage[0]; }
+    constexpr const Rep& get() const noexcept { return storage[0]; }
 
    protected:
     using base::storage;
