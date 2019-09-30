@@ -231,4 +231,7 @@ TEST_CASE("linearstep_componentwise", "[vec]") {
     REQUIRE(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.f}) == vec2{1.f});
     REQUIRE(cm::linearstep(vec2{0.5f}, vec2{0.f}, vec2{0.f, 1.f}) ==
             vec2{1.f, 0.f});
+
+    static_assert(cm::linearstep(-1.f, 1.f, vec3{2.f, -10.f, 0.5f}) ==
+                  vec3{1.f, 0.f, 0.75f});
 }

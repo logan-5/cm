@@ -30,10 +30,22 @@ TEST_CASE("linearstep", "[generic ops]") {
     static_assert(cm::linearstep(0.5f, 0.f, 0.5f) == 0.f);
     static_assert(cm::linearstep(0.5f, 0.f, 0.f) == 1.f);
     static_assert(cm::linearstep(0, 15, 7) == 0);
-    static_assert(cm::linearstep(0.f, 20.f, 10) == 0.5f);
+    static_assert(cm::linearstep(0, 20, 10.f) == 0.5f);
 
     REQUIRE(cm::linearstep(0.5f, 0.f, 0.5f) == 0.f);
     REQUIRE(cm::linearstep(0.5f, 0.f, 0.f) == 1.f);
     REQUIRE(cm::linearstep(0, 15, 7) == 0);
-    REQUIRE(cm::linearstep(0.f, 20.f, 10) == 0.5f);
+    REQUIRE(cm::linearstep(0, 20, 10.f) == 0.5f);
+}
+
+TEST_CASE("smoothstep", "[generic ops]") {
+    static_assert(cm::smoothstep(0.5f, 0.f, 0.5f) == 0.f);
+    static_assert(cm::smoothstep(0.5f, 0.f, 0.f) == 1.f);
+    static_assert(cm::smoothstep(0, 15, 7) == 0);
+    static_assert(cm::smoothstep(0, 20, 10.f) == 0.5f);
+
+    REQUIRE(cm::smoothstep(0.5f, 0.f, 0.5f) == 0.f);
+    REQUIRE(cm::smoothstep(0.5f, 0.f, 0.f) == 1.f);
+    REQUIRE(cm::smoothstep(0, 15, 7) == 0);
+    REQUIRE(cm::smoothstep(0, 20, 10.f) == 0.5f);
 }

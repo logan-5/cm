@@ -19,14 +19,14 @@ clamp(const T& t, const T& lo, const T& hi) {
 }
 
 template <typename T, typename U>
-constexpr T linearstep(const T& edge0, const T& edge1, const U& x) {
-    return clamp((T(x) - edge0) / (edge1 - edge0), T(0.0), T(1.0));
+constexpr U linearstep(const T& edge0, const T& edge1, const U& x) {
+    return clamp((x - U(edge0)) / U(edge1 - edge0), U(0.0), U(1.0));
 }
 
 template <typename T, typename U>
-constexpr float smoothstep(const T& edge0, const T& edge1, const U& x) {
-    const T t = linearstep(edge0, edge1, x);
-    return t * t * (T(3) - T(2) * t);
+constexpr U smoothstep(const T& edge0, const T& edge1, const U& x_) {
+    const U x = linearstep(edge0, edge1, x_);
+    return x * x * (U(3) - U(2) * x);
 }
 
 }  // namespace cm
