@@ -186,5 +186,18 @@ constexpr std::enable_if_t<detail::is_vec_v<V>, V> clamp(V v,
           v, lo, hi);
 }
 
+namespace detail {
+template <typename V>
+inline constexpr bool is_vec2or3_v = is_vec_v<V> && ((V::dimension() == 2) ||
+                                                     (V::dimension() == 3));
+}
+
+template <typename V>
+constexpr std::enable_if_t<detail::is_vec2or3_v<V>, V> bounce(
+      const V& in_normalized,
+      const V& normal) {
+    return in_normalized + normal * (cm::dot(in_normalized, normal) * -2.f);
+}
+
 }  // namespace cm
 #endif
