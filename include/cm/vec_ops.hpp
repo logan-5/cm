@@ -12,6 +12,32 @@ constexpr std::enable_if_t<detail::equality_comparable_v<Rep0, Rep1>, bool>
 operator==(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
     return cm::equal<Size>(a.storage.data(), b.storage.data());
 }
+template <typename Rep0, typename Rep1, usize Size>
+constexpr std::enable_if_t<detail::equality_comparable_v<Rep0, Rep1>, bool>
+operator!=(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
+    return !(a == b);
+}
+template <typename Rep0, typename Rep1, usize Size>
+constexpr std::enable_if_t<detail::less_than_comparable_v<Rep0, Rep1>, bool>
+operator<(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
+    return cm::lexicographical_compare<Size>(a.storage.data(),
+                                             b.storage.data());
+}
+template <typename Rep0, typename Rep1, usize Size>
+constexpr std::enable_if_t<detail::less_than_comparable_v<Rep0, Rep1>, bool>
+operator>=(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
+    return !(a < b);
+}
+template <typename Rep0, typename Rep1, usize Size>
+constexpr std::enable_if_t<detail::less_than_comparable_v<Rep0, Rep1>, bool>
+operator>(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
+    return b < a;
+}
+template <typename Rep0, typename Rep1, usize Size>
+constexpr std::enable_if_t<detail::less_than_comparable_v<Rep0, Rep1>, bool>
+operator<=(const vec_base<Rep0, Size>& a, const vec_base<Rep1, Size>& b) {
+    return !(a > b);
+}
 
 namespace detail {
 

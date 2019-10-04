@@ -36,6 +36,32 @@ constexpr std::enable_if_t<detail::equality_comparable_v<T, U>, bool> equal(
     }
     return true;
 }
+
+namespace detail {
+template <typename T, typename U>
+using less_than_t = decltype(std::declval<T>() < std::declval<U>());
+template <typename T, typename U, typename = void>
+struct less_than_comparable : std::false_type {};
+template <typename T, typename U>
+struct less_than_comparable<T, U, std::void_t<less_than_t<T, U>>>
+    : std::bool_constant<std::is_same_v<less_than_t<T, U>, bool>> {};
+template <typename T, typename U>
+constexpr inline bool less_than_comparable_v =
+      less_than_comparable<T, U>::value;
+}  // namespace detail
+template <usize Count, typename T, typename U>
+constexpr std::enable_if_t<detail::less_than_comparable_v<T, U>, bool>
+lexicographical_compare(const T* a, const U* b) {
+    for (usize i = 0; i < Count; ++i) {
+        if (a[i] < b[i]) {
+            return true;
+        }
+        if (b[i] < a[i]) {
+            return false;
+        }
+    }
+    return false;
+}
 }  // namespace cm
 
 #endif

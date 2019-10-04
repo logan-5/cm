@@ -286,3 +286,33 @@ TEST_CASE("bounce", "[vec]") {
                           cm::normalized(cm::vec3{-1.f, 1.f, 0.f}), 0.00001f));
     }
 }
+
+TEST_CASE("relational ops", "[vec]") {
+    constexpr vec4 a{1.f, 2.f, 3.f, 4.f};
+    constexpr vec4 b{4.f, 3.f, 2.f, 1.f};
+
+    static_assert(a != b);
+    static_assert(a < b);
+    static_assert(a <= b);
+    static_assert(b > a);
+    static_assert(b >= a);
+    REQUIRE(a != b);
+    REQUIRE(a < b);
+    REQUIRE(a <= b);
+    REQUIRE(b > a);
+    REQUIRE(b >= a);
+
+    constexpr ivec4 c{1, 1, 1, 1};
+    constexpr ivec4 d{1, 1, 1, 1};
+
+    static_assert(c == d);
+    static_assert(c <= d);
+    static_assert(d <= c);
+    static_assert(c >= d);
+    static_assert(d >= c);
+    REQUIRE(c == d);
+    REQUIRE(c <= d);
+    REQUIRE(d <= c);
+    REQUIRE(c >= d);
+    REQUIRE(d >= c);
+}
