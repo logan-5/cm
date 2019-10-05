@@ -226,7 +226,9 @@ namespace detail {
 template <typename V>
 inline constexpr bool is_vec2or3_v = is_vec_v<V> && ((V::dimension() == 2) ||
                                                      (V::dimension() == 3));
-}
+template <typename V>
+inline constexpr bool is_vec3_v = is_vec_v<V> && (V::dimension() == 3);
+}  // namespace detail
 
 template <typename V>
 constexpr std::enable_if_t<detail::is_vec2or3_v<V>, V> bounce(const V& in_,
@@ -248,6 +250,16 @@ fuzzy_equals(const V& a, const V& b) {
             return false;
     }
     return true;
+}
+
+template <typename V>
+static constexpr std::enable_if_t<detail::is_vec3_v<V>, V> cross(const V& a,
+                                                                 const V& b) {
+    return V{
+          a.y() * b.z() - a.z() * b.y(),
+          a.z() * b.x() - a.x() * b.z(),
+          a.x() * b.y() - a.y() * b.x(),
+    };
 }
 
 }  // namespace cm

@@ -298,3 +298,15 @@ TEST_CASE("relational ops", "[vec]") {
     REQUIRE(c >= d);
     REQUIRE(d >= c);
 }
+
+TEST_CASE("cross product", "[vec]") {
+    static_assert(cross(ivec3{2, 3, 4}, ivec3{5, 6, 7}) == ivec3{-3, 6, -3});
+    REQUIRE(cross(ivec3{2, 3, 4}, ivec3{5, 6, 7}) == ivec3{-3, 6, -3});
+
+    constexpr vec3 a{2, 1, -1};
+    constexpr vec3 b{-3, 4, 1};
+    static_assert(cross(a, b) == ivec3{5, 1, 11});
+    static_assert(cross(b, a) == ivec3{-5, -1, -11});
+    REQUIRE(cross(a, b) == ivec3{5, 1, 11});
+    REQUIRE(cross(b, a) == ivec3{-5, -1, -11});
+}
