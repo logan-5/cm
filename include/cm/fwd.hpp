@@ -4,6 +4,11 @@
 #include <cstddef>
 #include <cstdint>
 
+#ifdef CM_ENABLE_ASSERTIONS
+#include <cassert>
+#define CM_ASSERT(...) assert(__VA_ARGS__)
+#endif
+
 namespace cm {
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;

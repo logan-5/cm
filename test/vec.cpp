@@ -161,16 +161,13 @@ static_assert(magnitude_squared(ivec2{0, 1}) == 1);
 static_assert(magnitude_squared(ivec2{1, 1}) == 2);
 static_assert(magnitude_squared(vec3{5.f, 5.f, 5.f}) == 75.f);
 
-static bool fuzzy_equals(float a, float b, float err) {
-    return std::abs(a - b) < err;
-}
-
 TEST_CASE("magnitude", "[vec]") {
     REQUIRE(magnitude(ivec2{1, 0}) == 1);
     REQUIRE(magnitude(ivec2{0, 1}) == 1);
     REQUIRE(magnitude(ivec2{1, 1}) == 1);
-    REQUIRE(fuzzy_equals(magnitude(vec2{1, 1}), M_SQRT2, 0.005));
-    REQUIRE(fuzzy_equals(magnitude(vec3{2.f, 3.f, 5.f}), 6.16f, 0.005f));
+    REQUIRE(fuzzy_equals(magnitude(vec2{1, 1}), float(M_SQRT2)));
+    using Margin = error_margin<vec3::rep, std::ratio<5, 1000>>;
+    REQUIRE(fuzzy_equals<vec3, Margin>(magnitude(vec3{2.f, 3.f, 5.f}), 6.16f));
 }
 
 TEST_CASE("normalized", "[vec]") {
@@ -241,49 +238,31 @@ TEST_CASE("linearstep_componentwise", "[vec]") {
                   vec3{1.f, 0.f, 0.75f});
 }
 
-template <typename T>
-static constexpr T cabs(T val) {
-    return val < T(0) ? -val : val;
-}
-
-static constexpr bool fuzzy_equal(float a, float b, float tolerance) {
-    return cabs(a - b) < tolerance;
-}
-
-template <typename Rep, cm::usize Size>
-static constexpr bool fuzzy_equal(const cm::vec_base<Rep, Size>& a,
-                                  const cm::vec_base<Rep, Size>& b,
-                                  Rep tolerance) {
-    for (cm::usize i = 0; i < Size; ++i) {
-        if (!fuzzy_equal(a.storage[i], b.storage[i], tolerance))
-            return false;
-    }
-    return true;
-}
-
 TEST_CASE("bounce", "[vec]") {
     SECTION("2D") {
-        REQUIRE(fuzzy_equal(cm::bounce(cm::normalized(cm::vec2{1.f, -1.f}),
-                                       cm::normalized(cm::vec2{0.f, 1.f})),
-                            cm::normalized(cm::vec2{1.f, 1.f}), 0.00001f));
-        REQUIRE(fuzzy_equal(cm::bounce(cm::normalized(cm::vec2{-1.f, 1.f}),
-                                       cm::normalized(cm::vec2{1.f, 0.f})),
-                            cm::normalized(cm::vec2{1.f, 1.f}), 0.00001f));
-        REQUIRE(fuzzy_equal(cm::bounce(cm::normalized(cm::vec2{1.f, -1.f}),
-                                       cm::normalized(cm::vec2{-1.f, 1.f})),
-                            cm::normalized(cm::vec2{-1.f, 1.f}), 0.00001f));
+        REQUIRE(fuzzy_equals(cm::bounce(cm::normalized(cm::vec2{1.f, -1.f}),
+                                        cm::normalized(cm::vec2{0.f, 1.f})),
+                             cm::normalized(cm::vec2{1.f, 1.f})));
+        REQUIRE(fuzzy_equals(cm::bounce(cm::normalized(cm::vec2{-1.f, 1.f}),
+                                        cm::normalized(cm::vec2{1.f, 0.f})),
+                             cm::normalized(cm::vec2{1.f, 1.f})));
+        REQUIRE(fuzzy_equals(cm::bounce(cm::normalized(cm::vec2{1.f, -1.f}),
+                                        cm::normalized(cm::vec2{-1.f, 1.f})),
+                             cm::normalized(cm::vec2{-1.f, 1.f})));
     }
     SECTION("3D") {
-        REQUIRE(fuzzy_equal(cm::bounce(cm::normalized(cm::vec3{1.f, -1.f, 0.f}),
-                                       cm::normalized(cm::vec3{0.f, 1.f, 0.f})),
-                            cm::normalized(cm::vec3{1.f, 1.f, 0.f}), 0.00001f));
-        REQUIRE(fuzzy_equal(cm::bounce(cm::normalized(cm::vec3{-1.f, 1.f, 0.f}),
-                                       cm::normalized(cm::vec3{1.f, 0.f, 0.f})),
-                            cm::normalized(cm::vec3{1.f, 1.f, 0.f}), 0.00001f));
         REQUIRE(
-              fuzzy_equal(cm::bounce(cm::normalized(cm::vec3{1.f, -1.f, 0.f}),
-                                     cm::normalized(cm::vec3{-1.f, 1.f, 0.f})),
-                          cm::normalized(cm::vec3{-1.f, 1.f, 0.f}), 0.00001f));
+              fuzzy_equals(cm::bounce(cm::normalized(cm::vec3{1.f, -1.f, 0.f}),
+                                      cm::normalized(cm::vec3{0.f, 1.f, 0.f})),
+                           cm::normalized(cm::vec3{1.f, 1.f, 0.f})));
+        REQUIRE(
+              fuzzy_equals(cm::bounce(cm::normalized(cm::vec3{-1.f, 1.f, 0.f}),
+                                      cm::normalized(cm::vec3{1.f, 0.f, 0.f})),
+                           cm::normalized(cm::vec3{1.f, 1.f, 0.f})));
+        REQUIRE(
+              fuzzy_equals(cm::bounce(cm::normalized(cm::vec3{1.f, -1.f, 0.f}),
+                                      cm::normalized(cm::vec3{-1.f, 1.f, 0.f})),
+                           cm::normalized(cm::vec3{-1.f, 1.f, 0.f})));
     }
 }
 

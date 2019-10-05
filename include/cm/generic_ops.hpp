@@ -1,11 +1,32 @@
 #ifndef CM_GENERIC_OPS
 #define CM_GENERIC_OPS
 
+#include "constants.hpp"
 #include "fwd.hpp"
 
 #include <algorithm>
 
 namespace cm {
+
+template <typename T>
+constexpr std::enable_if_t<std::is_arithmetic_v<T>, T> abs(T val) {
+    return val < T(0) ? -val : val;
+}
+
+namespace detail {
+template <typename T>
+struct is_error_margin : std::false_type {};
+template <typename Rep, typename Ratio>
+struct is_error_margin<cm::error_margin<Rep, Ratio>> : std::true_type {};
+}  // namespace detail
+
+template <typename T, typename ErrorMargin = default_error_margin>
+constexpr std::enable_if_t<std::is_arithmetic_v<T> &&
+                                 detail::is_error_margin<ErrorMargin>::value,
+                           bool>
+fuzzy_equals(const T& a, const T& b) {
+    return abs(a - b) < ErrorMargin::value;
+}
 
 template <typename T, typename Alpha>
 constexpr T lerp(const T& a, const T& b, const Alpha f) {

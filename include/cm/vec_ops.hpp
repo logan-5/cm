@@ -1,6 +1,7 @@
 #ifndef CM_VEC_OPS_HPP
 #define CM_VEC_OPS_HPP
 
+#include <cm/generic_ops.hpp>
 #include <cm/vec_base.hpp>
 
 #include <cmath>
@@ -223,6 +224,21 @@ constexpr std::enable_if_t<detail::is_vec2or3_v<V>, V> bounce(
       const V& in_normalized,
       const V& normal) {
     return in_normalized + normal * (cm::dot(in_normalized, normal) * -2.f);
+}
+
+template <typename V, typename ErrorMargin = default_error_margin>
+static constexpr std::enable_if_t<
+      detail::is_vec_v<V> && detail::is_error_margin<ErrorMargin>::value,
+      bool>
+fuzzy_equals(const V& a, const V& b) {
+    using base = decltype(detail::vec_base_type_helper::foo(a));
+    for (usize i = 0; i < V::dimension(); ++i) {
+        if (!cm::fuzzy_equals<typename V::rep, ErrorMargin>(
+                  static_cast<const base&>(a).storage[i],
+                  static_cast<const base&>(b).storage[i]))
+            return false;
+    }
+    return true;
 }
 
 }  // namespace cm
