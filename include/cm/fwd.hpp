@@ -7,6 +7,8 @@
 #ifdef CM_ENABLE_ASSERTIONS
 #include <cassert>
 #define CM_ASSERT(...) assert(__VA_ARGS__)
+#else
+#define CM_ASSERT(...)
 #endif
 
 namespace cm {

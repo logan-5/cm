@@ -175,6 +175,9 @@ TEST_CASE("normalized", "[vec]") {
     REQUIRE(normalized(ivec2{0, 1}) == ivec2{0, 1});
     REQUIRE(normalized(ivec2{1, 1}) == ivec2{1, 1});
     REQUIRE(magnitude(normalized(vec4{5.f, 50.f, 85.f, 9.f})) == 1.f);
+
+    REQUIRE(is_normalized(vec2{1.f, 0.f}));
+    REQUIRE(!is_normalized(vec2{1.f, 1.f}));
 }
 
 TEST_CASE("copying", "[vec]") {

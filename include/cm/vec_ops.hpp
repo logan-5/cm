@@ -195,6 +195,15 @@ constexpr std::enable_if_t<detail::is_vec_v<V>, V> normalized(const V& v) {
     return v * scale;
 }
 
+template <typename V, typename ErrorMargin = default_error_margin>
+constexpr std::enable_if_t<detail::is_vec_v<V> &&
+                                 detail::is_error_margin<ErrorMargin>::value,
+                           bool>
+is_normalized(const V& v) {
+    using Rep = typename V::rep;
+    return fuzzy_equals<Rep, ErrorMargin>(magnitude(v), Rep(1));
+}
+
 template <typename V>
 constexpr std::enable_if_t<detail::is_vec_v<V>, V> clamp(V v,
                                                          typename V::rep lo,
@@ -220,10 +229,10 @@ inline constexpr bool is_vec2or3_v = is_vec_v<V> && ((V::dimension() == 2) ||
 }
 
 template <typename V>
-constexpr std::enable_if_t<detail::is_vec2or3_v<V>, V> bounce(
-      const V& in_normalized,
-      const V& normal) {
-    return in_normalized + normal * (cm::dot(in_normalized, normal) * -2.f);
+constexpr std::enable_if_t<detail::is_vec2or3_v<V>, V> bounce(const V& in_,
+                                                              const V& normal) {
+    CM_ASSERT(is_normalized(normal));
+    return in_ + normal * (cm::dot(in_, normal) * -2.f);
 }
 
 template <typename V, typename ErrorMargin = default_error_margin>
